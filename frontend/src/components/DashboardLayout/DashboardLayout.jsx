@@ -10,6 +10,7 @@ import ApplicationFormView from '../Views/ApplicationFormView';
 import AutomationView from '../Views/AutomationView';
 import JobsView from '../Views/JobsView';
 import CareerSiteView from '../Views/CareerSiteView';
+import ActivityView from '../Views/ActivityView';
 import CandidateDrawer from '../CandidateDrawer/CandidateDrawer';
 import Subheader from '../Subheader/Subheader';
 import styles from './DashboardLayout.module.css';
@@ -354,6 +355,7 @@ export default function DashboardLayout() {
       case 'Score Card': return <ScoreCardView />;
       case 'Application Form': return <ApplicationFormView />;
       case 'Automation': return <AutomationView />;
+      case 'Activity': return <ActivityView />;
       default:
         return <EmptyState title={activeTab} message="This module is under construction." />;
     }
