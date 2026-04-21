@@ -51,3 +51,16 @@ button {
   font-family: inherit;
   cursor: pointer;
 }
+
+.fade-in {
+  animation: fadeInGlobal 0.8s ease-out forwards;
+}
+
+@keyframes fadeInGlobal {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
