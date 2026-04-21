@@ -1,0 +1,296 @@
+.jobsContainer {
+  padding: 40px;
+  background-color: var(--bg-main, #F4F5F7);
+  min-height: calc(100vh - 60px); /* Adjust for top nav */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #1a1b1f;
+  margin: 0;
+}
+
+.headerActions {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1px solid #dfe1e6;
+  border-radius: 4px;
+  padding: 8px 12px;
+  width: 280px;
+}
+
+.searchIcon {
+  color: #6b778c;
+  margin-right: 8px;
+}
+
+.searchInput {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 14px;
+}
+
+.createBtn {
+  background-color: var(--color-primary, #2684FF);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.createBtn:hover {
+  background-color: #1e6bd6;
+}
+
+.jobsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
+}
+
+.jobCard {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #dfe1e6;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.jobCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+  border-color: var(--color-primary, #2684FF);
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.jobTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #172b4d;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.statusOpen {
+  background-color: #E3FCEF;
+  color: var(--color-success, #36B37E);
+}
+
+.statusClosed {
+  background-color: #EBECF0;
+  color: #5E6C84;
+}
+
+.metadataGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #5E6C84;
+  font-size: 13px;
+}
+
+.icon {
+  color: #8993a4;
+}
+
+.cardFooter {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #EBECF0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.candidateCount {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #42526E;
+  background: var(--bg-main, #F4F5F7);
+  padding: 6px 10px;
+  border-radius: 4px;
+}
+
+.loadingState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: #5E6C84;
+  font-size: 18px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(9, 30, 66, 0.54);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 8px;
+  width: 480px;
+  max-width: 90vw;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  border-bottom: 1px solid #DFE1E6;
+}
+
+.modalHeader h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #172B4D;
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #5E6C84;
+}
+
+.closeBtn:hover {
+  color: #172B4D;
+}
+
+.modalBody {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.formGroup label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #172B4D;
+}
+
+.formGroup input,
+.formGroup select {
+  padding: 10px 12px;
+  border: 1px solid #DFE1E6;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #172B4D;
+  background-color: #FAFBFC;
+}
+
+.formGroup input:focus,
+.formGroup select:focus {
+  outline: none;
+  border-color: var(--color-primary, #2684FF);
+  background-color: white;
+}
+
+.modalFooter {
+  padding: 16px 24px;
+  border-top: 1px solid #DFE1E6;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: none;
+  padding: 10px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 4px;
+  color: #42526E;
+}
+
+.cancelBtn:hover {
+  background-color: #EBECF0;
+}
+
+.submitBtn {
+  background-color: var(--color-primary, #2684FF);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.submitBtn:hover {
+  background-color: #1e6bd6;
+}
+
+.submitBtn:disabled {
+  background-color: #A5ADBA;
+  cursor: not-allowed;
+}

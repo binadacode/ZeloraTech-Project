@@ -1,0 +1,105 @@
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+.drawer {
+  position: fixed;
+  top: 0; right: 0; bottom: 0;
+  width: 450px;
+  background: var(--bg-surface);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open {
+  transform: translateX(0);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.header {
+  padding: 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.headerTitleGroup {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.avatarLarge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--bg-main);
+  color: var(--color-primary);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+.header h2 { margin: 0 0 4px 0; font-size: 20px; color: var(--text-primary); }
+.stageTag {
+  background: var(--bg-main);
+  color: var(--text-secondary);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.closeBtn {
+  background: transparent; border: none; cursor: pointer; color: var(--text-secondary);
+  transition: transform 0.2s;
+}
+.closeBtn:hover { color: var(--text-primary); transform: scale(1.1); }
+
+.content {
+  padding: 24px;
+  flex: 1;
+  overflow-y: auto;
+}
+.sectionCard {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+.sectionCard h3 { margin: 0 0 16px 0; font-size: 16px; color: var(--text-primary); }
+.infoRow { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); margin-bottom: 12px; font-size: 14px; }
+.infoRow:last-child { margin-bottom: 0; }
+
+/* Timeline */
+.timeline { display: flex; flex-direction: column; gap: 16px; }
+.timelineItem { display: flex; gap: 12px; position: relative; }
+.timelineItem:not(:last-child):before { content: ""; position: absolute; left: 5px; top: 12px; bottom: -20px; width: 2px; background: var(--border-color); }
+.timelineDot { width: 12px; height: 12px; border-radius: 50%; background: var(--color-primary); border: 2px solid #fff; z-index: 1; margin-top: 2px; }
+.timelineContent { display: flex; flex-direction: column; }
+.timelineDate { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+
+/* Score */
+.scoreDetails { display: flex; flex-direction: column; gap: 12px; }
+.scoreRow { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.scoreRow span:first-child { width: 120px; }
+.scoreBarBg { flex: 1; height: 8px; background: var(--bg-main); border-radius: 4px; overflow: hidden; }
+.scoreBarFill { height: 100%; background: var(--color-warning); }
+
+.footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+.primaryBtn { background: var(--color-primary); color: #fff; border: none; padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer; font-weight: 500;}
+.outlineBtn { background: transparent; color: #ef4444; border: 1px solid #ef4444; padding: 10px 20px; border-radius: var(--radius-md); cursor: pointer; font-weight: 500;}

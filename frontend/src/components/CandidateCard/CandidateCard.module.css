@@ -1,0 +1,102 @@
+.card {
+  background-color: #fff;
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+}
+.card.isDragging {
+  box-shadow: var(--shadow-hover);
+  transform: scale(1.02);
+}
+.mainInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.avatarPlaceholder {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 600;
+  color: #fff;
+  font-size: 14px;
+}
+.nameGroup {
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.date {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border-color);
+}
+.score {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.scoreValue {
+  color: var(--text-primary);
+}
+.scoreLabel {
+  color: var(--text-secondary);
+}
+.badges {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.referredBadge {
+  color: var(--color-referred);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.assessmentBadge {
+  color: var(--color-assessment);
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.moreBtn {
+  color: var(--text-secondary);
+  background: transparent;
+  border: none;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+}
