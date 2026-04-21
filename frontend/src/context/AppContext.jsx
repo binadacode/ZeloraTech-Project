@@ -53,6 +53,9 @@ export function AppProvider({ children }) {
     { id: 3, text: "Meeting scheduled with Sarah Jenkins at 2:00 PM", time: "3h ago", unread: false, type: 'calendar' }
   ]);
 
+  const [interviews, setInterviews] = useState([]);
+  const [interviewsLoading, setInterviewsLoading] = useState(true);
+
   const markAllNotificationsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
   };
@@ -106,6 +109,41 @@ export function AppProvider({ children }) {
       console.error('Error fetching jobs:', error);
     } finally {
       setJobsLoading(false);
+    }
+  };
+
+  const fetchInterviews = async () => {
+    setInterviewsLoading(true);
+    try {
+      const res = await axios.get('http://localhost:5005/api/interviews');
+      setInterviews(res.data);
+    } catch (error) {
+      console.error('Error fetching interviews:', error);
+    } finally {
+      setInterviewsLoading(false);
+    }
+  };
+
+  const scheduleInterview = async (interviewData) => {
+    try {
+      const res = await axios.post('http://localhost:5005/api/interviews', interviewData);
+      setInterviews(prev => [...prev, res.data]);
+      addNotification(`Interview scheduled with ${interviewData.candidateName}`, 'calendar');
+      return res.data;
+    } catch (error) {
+      console.error('Error scheduling interview:', error);
+      throw error;
+    }
+  };
+
+  const cancelInterview = async (interviewId) => {
+    try {
+      await axios.delete(`http://localhost:5005/api/interviews/${interviewId}`);
+      setInterviews(prev => prev.filter(i => i.id !== interviewId));
+      addNotification(`Interview cancelled`, 'info');
+    } catch (error) {
+      console.error('Error cancelling interview:', error);
+      throw error;
     }
   };
 
@@ -195,6 +233,7 @@ export function AppProvider({ children }) {
     fetchContextData();
     fetchCandidates();
     fetchJobs();
+    fetchInterviews();
     fetchSettings();
   }, []);
 
@@ -257,6 +296,7 @@ export function AppProvider({ children }) {
       activeTab, setActiveTab,
       candidates, setCandidates, fetchCandidates, updateCandidateStage,
       jobs, setJobs, fetchJobs, jobsLoading, selectJob, createJob, toggleJobPublish, updateJob, deleteJob, duplicateJob,
+      interviews, setInterviews, fetchInterviews, interviewsLoading, scheduleInterview, cancelInterview,
       siteSettings, fetchSettings, updateSettings, settingsLoading,
       notifications, markAllNotificationsRead, addNotification,
       loading,

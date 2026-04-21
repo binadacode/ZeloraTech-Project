@@ -340,6 +340,32 @@ app.delete('/api/candidates/:id', (req, res) => {
   res.status(204).end();
 });
 
+let interviews = [
+  { id: "101", candidateId: "9", candidateName: "Cameron Dickens", type: "Technical Interview", dateTime: "2026-04-21T10:00:00", duration: 60 },
+  { id: "102", candidateId: "10", candidateName: "Lola Kirlin", type: "Live Coding Test", dateTime: "2026-04-23T14:00:00", duration: 90 }
+];
+
+// GET /api/interviews
+app.get('/api/interviews', (req, res) => {
+  res.json(interviews);
+});
+
+// POST /api/interviews
+app.post('/api/interviews', (req, res) => {
+  const newInterview = {
+    id: Date.now().toString(),
+    ...req.body
+  };
+  interviews.push(newInterview);
+  res.status(201).json(newInterview);
+});
+
+// DELETE /api/interviews/:id
+app.delete('/api/interviews/:id', (req, res) => {
+  interviews = interviews.filter(i => i.id !== req.params.id);
+  res.status(204).end();
+});
+
 const PORT = process.env.PORT || 5005;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
