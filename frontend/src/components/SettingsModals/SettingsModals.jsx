@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, GripVertical, Plus, Trash2, Mail, Users, Archive, ToggleLeft as Toggle } from 'lucide-react';
 import { useAppContext } from '../../context/AppContext';
+import CreateRuleModal from '../Modals/CreateRuleModal';
 import styles from './SettingsModals.module.css';
 
 export function ColumnConfigModal({ onClose }) {
@@ -54,13 +55,8 @@ export function ColumnConfigModal({ onClose }) {
 }
 
 export function AutomationRulesModal({ onClose }) {
-  const { automationRules, setAutomationRules, addNotification } = useAppContext();
-
-  const toggleRule = (id) => {
-    setAutomationRules(automationRules.map(r => r.id === id ? { ...r, active: !r.active } : r));
-    const rule = automationRules.find(r => r.id === id);
-    addNotification(`${rule.description} ${!rule.active ? 'enabled' : 'disabled'}`, 'info');
-  };
+  const { automationRules, toggleAutomationRule, deleteAutomationRule } = useAppContext();
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <div className={styles.modalOverlay}>
@@ -75,20 +71,28 @@ export function AutomationRulesModal({ onClose }) {
           </div>
           {automationRules.map(rule => (
             <div key={rule.id} className={styles.ruleCard}>
-              <div>
+              <div style={{flex: 1}}>
                 <div className={styles.ruleDesc}>{rule.description}</div>
                 <div className={styles.ruleMeta}>
-                  {rule.action === 'email' ? <Mail size={12} style={{display: 'inline', marginRight: '4px'}} /> : null}
-                  Trigger: Candidate reaches {rule.triggerStage}
+                  {rule.action === 'email' ? <Mail size={12} style={{display: 'inline', marginRight: '4px'}} /> : <Bell size={12} style={{display: 'inline', marginRight: '4px'}} />}
+                  Trigger: {rule.triggerStage}
                 </div>
               </div>
-              <label className={styles.switch}>
-                <input type="checkbox" checked={rule.active} onChange={() => toggleRule(rule.id)} />
-                <span className={styles.slider}></span>
-              </label>
+              <div style={{display: 'flex', alignItems: 'center', gap: '12px'}}>
+                <label className={styles.switch}>
+                  <input type="checkbox" checked={rule.active} onChange={() => toggleAutomationRule(rule.id)} />
+                  <span className={styles.slider}></span>
+                </label>
+                <button 
+                  onClick={() => deleteAutomationRule(rule.id)}
+                  style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex'}}
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
           ))}
-          <button className={styles.addStageBtn} onClick={() => addNotification("Custom rule creation coming soon", 'info')}>
+          <button className={styles.addStageBtn} onClick={() => setIsCreateModalOpen(true)}>
             <Plus size={16} /> Create New Rule
           </button>
         </div>
@@ -96,6 +100,7 @@ export function AutomationRulesModal({ onClose }) {
           <button className={styles.submitBtn} onClick={onClose}>Done</button>
         </div>
       </div>
+      {isCreateModalOpen && <CreateRuleModal isOpen={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} />}
     </div>
   );
 }

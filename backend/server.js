@@ -6,6 +6,25 @@ app.use(cors());
 app.use(express.json());
 
 // In-memory mock data
+let activities = [
+  { id: "1", type: "job", user: "Bogus Fikri", action: "created a new job", target: "Research and Development Officer", timestamp: new Date(Date.now() - 3600000).toISOString() },
+  { id: "2", type: "candidate", user: "Alice Smith", action: "moved candidate", target: "Kristi Sipes", detail: "to Screening", timestamp: new Date(Date.now() - 7200000).toISOString() },
+  { id: "3", type: "calendar", user: "Bob Johnson", action: "scheduled an interview with", target: "Cameron Dickens", timestamp: new Date(Date.now() - 86400000).toISOString() },
+  { id: "4", type: "job", user: "Bogus Fikri", action: "published job", target: "Frontend Engineer", timestamp: new Date(Date.now() - 172800000).toISOString() }
+];
+
+const logActivity = (type, user, action, target, detail = "") => {
+  activities.unshift({
+    id: Date.now().toString(),
+    type,
+    user,
+    action,
+    target,
+    detail,
+    timestamp: new Date().toISOString()
+  });
+};
+
 let candidates = [
   {
     id: "1",
@@ -227,6 +246,23 @@ const contextData = {
     jobsCount: 8,
     candidatesCount: 551,
     automationCount: 5
+  },
+  scoreCardTemplates: {
+    "1": [
+      { id: "1", title: "Technical Skills", weight: "40%", description: "Proficiency in required tech stack and architecture design." },
+      { id: "2", title: "Communication", weight: "20%", description: "Ability to articulate ideas and collaborate." },
+      { id: "3", title: "Culture Fit", weight: "20%", description: "Alignment with company values and team dynamics." },
+      { id: "4", title: "Problem Solving", weight: "20%", description: "Critical thinking and approach to novel challenges." }
+    ]
+  },
+  formConfigs: {
+    "1": [
+      { id: "name", label: "Full Name", required: true, type: "text", enabled: true },
+      { id: "email", label: "Email Address", required: true, type: "email", enabled: true },
+      { id: "resume", label: "Resume / CV", required: true, type: "file", enabled: true },
+      { id: "coverLetter", label: "Cover Letter", required: false, type: "textarea", enabled: true },
+      { id: "portfolio", label: "Portfolio URL", required: false, type: "text", enabled: false }
+    ]
   }
 };
 
@@ -265,6 +301,7 @@ app.post('/api/jobs', (req, res) => {
     createdBy: req.body.createdBy || { name: "Current User" }
   };
   jobs.push(newJob);
+  logActivity("job", newJob.createdBy.name, "created a new job", newJob.title);
   res.status(201).json(newJob);
 });
 
@@ -278,6 +315,31 @@ app.put('/api/jobs/:id', (req, res) => {
     res.status(404).json({ error: "Job not found" });
   }
 });
+
+// GET /api/jobs/:id/scorecard
+app.get('/api/jobs/:id/scorecard', (req, res) => {
+  const template = contextData.scoreCardTemplates[req.params.id] || contextData.scoreCardTemplates["1"];
+  res.json(template);
+});
+
+// PUT /api/jobs/:id/scorecard
+app.put('/api/jobs/:id/scorecard', (req, res) => {
+  contextData.scoreCardTemplates[req.params.id] = req.body;
+  res.json(req.body);
+});
+
+// GET /api/jobs/:id/form
+app.get('/api/jobs/:id/form', (req, res) => {
+  const config = contextData.formConfigs[req.params.id] || contextData.formConfigs["1"];
+  res.json(config);
+});
+
+// PUT /api/jobs/:id/form
+app.put('/api/jobs/:id/form', (req, res) => {
+  contextData.formConfigs[req.params.id] = req.body;
+  res.json(req.body);
+});
+
 
 // DELETE /api/jobs/:id
 app.delete('/api/jobs/:id', (req, res) => {
@@ -327,7 +389,11 @@ app.post('/api/candidates', (req, res) => {
 app.put('/api/candidates/:id', (req, res) => {
   const index = candidates.findIndex(c => c.id === req.params.id);
   if (index !== -1) {
+    const oldStage = candidates[index].stage;
     candidates[index] = { ...candidates[index], ...req.body };
+    if (req.body.stage && req.body.stage !== oldStage) {
+      logActivity("candidate", "Current User", "moved candidate", candidates[index].name, `to ${req.body.stage}`);
+    }
     res.json(candidates[index]);
   } else {
     res.status(404).json({ error: "Candidate not found" });
@@ -357,6 +423,7 @@ app.post('/api/interviews', (req, res) => {
     ...req.body
   };
   interviews.push(newInterview);
+  logActivity("calendar", "Current User", "scheduled an interview with", newInterview.candidateName, newInterview.type);
   res.status(201).json(newInterview);
 });
 
@@ -364,6 +431,11 @@ app.post('/api/interviews', (req, res) => {
 app.delete('/api/interviews/:id', (req, res) => {
   interviews = interviews.filter(i => i.id !== req.params.id);
   res.status(204).end();
+});
+
+// Activity Feed Endpoint
+app.get('/api/activities', (req, res) => {
+  res.json(activities);
 });
 
 const PORT = process.env.PORT || 5005;

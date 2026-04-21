@@ -56,6 +56,15 @@ export function AppProvider({ children }) {
   const [interviews, setInterviews] = useState([]);
   const [interviewsLoading, setInterviewsLoading] = useState(true);
 
+  const [scoreCard, setScoreCard] = useState([]);
+  const [scoreCardLoading, setScoreCardLoading] = useState(true);
+
+  const [formConfig, setFormConfig] = useState([]);
+  const [formConfigLoading, setFormConfigLoading] = useState(true);
+
+  const [activities, setActivities] = useState([]);
+  const [activitiesLoading, setActivitiesLoading] = useState(true);
+
   const markAllNotificationsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
   };
@@ -124,11 +133,24 @@ export function AppProvider({ children }) {
     }
   };
 
+  const fetchActivities = async () => {
+    setActivitiesLoading(true);
+    try {
+      const res = await axios.get('http://localhost:5005/api/activities');
+      setActivities(res.data);
+    } catch (error) {
+      console.error('Error fetching activities:', error);
+    } finally {
+      setActivitiesLoading(false);
+    }
+  };
+
   const scheduleInterview = async (interviewData) => {
     try {
       const res = await axios.post('http://localhost:5005/api/interviews', interviewData);
       setInterviews(prev => [...prev, res.data]);
       addNotification(`Interview scheduled with ${interviewData.candidateName}`, 'calendar');
+      fetchActivities(); // Refresh feed
       return res.data;
     } catch (error) {
       console.error('Error scheduling interview:', error);
@@ -145,6 +167,72 @@ export function AppProvider({ children }) {
       console.error('Error cancelling interview:', error);
       throw error;
     }
+  };
+
+  const fetchScoreCard = async (jobId) => {
+    setScoreCardLoading(true);
+    try {
+      const res = await axios.get(`http://localhost:5005/api/jobs/${jobId}/scorecard`);
+      setScoreCard(res.data);
+    } catch (error) {
+      console.error('Error fetching scorecard:', error);
+    } finally {
+      setScoreCardLoading(false);
+    }
+  };
+
+  const updateScoreCard = async (jobId, newTemplate) => {
+    try {
+      const res = await axios.put(`http://localhost:5005/api/jobs/${jobId}/scorecard`, newTemplate);
+      setScoreCard(res.data);
+      addNotification("Score card template updated", "success");
+      return res.data;
+    } catch (error) {
+      console.error('Error updating scorecard:', error);
+      addNotification("Failed to update score card", "error");
+      throw error;
+    }
+  };
+
+  const fetchFormConfig = async (jobId) => {
+    setFormConfigLoading(true);
+    try {
+      const res = await axios.get(`http://localhost:5005/api/jobs/${jobId}/form`);
+      setFormConfig(res.data);
+    } catch (error) {
+      console.error('Error fetching form config:', error);
+    } finally {
+      setFormConfigLoading(false);
+    }
+  };
+
+  const updateFormConfig = async (jobId, newConfig) => {
+    try {
+      const res = await axios.put(`http://localhost:5005/api/jobs/${jobId}/form`, newConfig);
+      setFormConfig(res.data);
+      addNotification("Application form custom fields updated", "success");
+      return res.data;
+    } catch (error) {
+      console.error('Error updating form config:', error);
+      addNotification("Failed to update form layout", "error");
+      throw error;
+    }
+  };
+
+  const addAutomationRule = (rule) => {
+    setAutomationRules(prev => [...prev, { ...rule, id: Date.now() }]);
+    addNotification("New automation rule created", "success");
+  };
+
+  const toggleAutomationRule = (id) => {
+    setAutomationRules(prev => prev.map(r => r.id === id ? { ...r, active: !r.active } : r));
+    const rule = automationRules.find(r => r.id === id);
+    if (rule) addNotification(`${rule.description} ${!rule.active ? 'enabled' : 'disabled'}`, 'info');
+  };
+
+  const deleteAutomationRule = (id) => {
+    setAutomationRules(prev => prev.filter(r => r.id !== id));
+    addNotification("Automation rule deleted", "info");
   };
 
   const fetchSettings = async () => {
@@ -193,6 +281,7 @@ export function AppProvider({ children }) {
       const res = await axios.post('http://localhost:5005/api/jobs', jobData);
       setJobs(prev => [...prev, res.data]);
       setMetrics(prev => ({ ...prev, jobsCount: prev.jobsCount + 1 }));
+      fetchActivities(); // Refresh feed
       return res.data;
     } catch (error) {
       console.error('Error creating job:', error);
@@ -218,6 +307,7 @@ export function AppProvider({ children }) {
       await axios.put(`http://localhost:5005/api/candidates/${candidateId}`, {
         stage: newStage
       });
+      fetchActivities(); // Refresh feed
       // Optionally trigger success toast here
     } catch (error) {
       console.error('Error updating candidate:', error);
@@ -228,14 +318,22 @@ export function AppProvider({ children }) {
   };
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    // Initial data fetch
     fetchContextData();
     fetchCandidates();
     fetchJobs();
     fetchInterviews();
     fetchSettings();
+    fetchActivities();
   }, []);
+
+  useEffect(() => {
+    // Fetch job-specific data when job changes
+    if (currentJob?.id) {
+      fetchScoreCard(currentJob.id);
+      fetchFormConfig(currentJob.id);
+    }
+  }, [currentJob?.id]);
 
   const updateJob = async (jobId, jobData) => {
     const prevJob = { ...currentJob };
@@ -306,8 +404,12 @@ export function AppProvider({ children }) {
       currentJob, setCurrentJob,
       metrics, setMetrics,
       stages, setStages,
-      automationRules, setAutomationRules,
-      members, setMembers
+      automationRules, 
+      members, setMembers,
+      scoreCard, scoreCardLoading, updateScoreCard,
+      formConfig, formConfigLoading, updateFormConfig,
+      addAutomationRule, toggleAutomationRule, deleteAutomationRule,
+      activities, activitiesLoading, fetchActivities
     }}>
 
       {children}
