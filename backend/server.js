@@ -442,9 +442,11 @@ app.post('/api/chat', (req, res) => {
   let action = null;
 
   // Intent: Submit/Create Job (Higher priority to avoid partial matches like 'research' in 'filter')
-  if (lowerMessage.includes('submit') || lowerMessage.includes('create') || lowerMessage.includes('add')) {
+  if (lowerMessage.includes('submit') || lowerMessage.includes('create') || lowerMessage.includes('add') || lowerMessage.includes('new job')) {
     const jobTitleMatch = message.match(/(?:for|job)\s+([^.]+)/i);
-    const title = jobTitleMatch ? jobTitleMatch[1].trim() : "New Agent Job";
+    let title = jobTitleMatch ? jobTitleMatch[1].trim() : "New Agent Job";
+    // Strip leading "for " if it exists
+    title = title.replace(/^for\s+/i, '');
     responseText = `I've started creating the job for "${title}". You can see it in the list now.`;
     action = { type: 'SUBMIT_JOB', payload: { title, department: 'Engineering', location: 'Remote' } };
   }

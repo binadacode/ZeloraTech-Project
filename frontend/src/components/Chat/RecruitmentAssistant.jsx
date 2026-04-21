@@ -18,7 +18,8 @@ export default function RecruitmentAssistant() {
     setGlobalSearch, 
     addNotification, 
     createJob, 
-    fetchActivities 
+    fetchActivities,
+    candidates
   } = useAppContext();
 
   const scrollToBottom = () => {
@@ -28,6 +29,48 @@ export default function RecruitmentAssistant() {
   useEffect(() => {
     scrollToBottom();
   }, [history, isThinking]);
+
+  const downloadCSV = () => {
+    console.log('Generating CSV for', candidates?.length, 'candidates');
+    if (!candidates || candidates.length === 0) {
+      addNotification('No candidates found to generate report', 'error');
+      return;
+    }
+    
+    const headers = ['Name', 'Stage', 'Applied Date', 'Score', 'Email', 'Experience', 'Education'];
+    
+    // Proper CSV escaping
+    const escapeCSV = (val) => {
+      const stringVal = String(val ?? '');
+      if (stringVal.includes(',') || stringVal.includes('"') || stringVal.includes('\n')) {
+        return `"${stringVal.replace(/"/g, '""')}"`;
+      }
+      return stringVal;
+    };
+
+    const rows = candidates.map(c => [
+      escapeCSV(c.name), 
+      escapeCSV(c.stage), 
+      escapeCSV(c.applicationDate), 
+      escapeCSV(c.overallScore), 
+      escapeCSV(c.email), 
+      escapeCSV(c.experience), 
+      escapeCSV(c.education)
+    ]);
+    
+    const csvContent = [headers, ...rows].map(e => e.join(",")).join("\n");
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    
+    link.setAttribute("href", url);
+    link.setAttribute("download", `Recruitment_Report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.display = 'none';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
 
   const handleAction = async (action) => {
     if (!action) return;
@@ -41,14 +84,12 @@ export default function RecruitmentAssistant() {
         setActiveTab('Candidates');
         break;
       case 'SUMMARIZE':
-        // Text is already in response, but we could do more here if needed
         break;
       case 'DOWNLOAD_REPORT':
-        addNotification(`Downloading report: ${action.payload.fileName}`, 'info');
-        // Simulate download
-        setTimeout(() => {
-          addNotification('Report downloaded successfully', 'success');
-        }, 3000);
+        addNotification(`Generating report...`, 'info');
+        // Download immediately to maintain user activation
+        downloadCSV();
+        addNotification('Report downloaded successfully', 'success');
         break;
       case 'SUBMIT_JOB':
         try {
@@ -64,11 +105,11 @@ export default function RecruitmentAssistant() {
     }
   };
 
-  const handleSend = async (e) => {
-    if (e) e.preventDefault();
-    if (!message.trim() || isThinking) return;
+  const handleSend = async (e, directMsg = null) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const userMsg = directMsg || message;
+    if (!userMsg.trim() || isThinking) return;
 
-    const userMsg = message;
     setMessage('');
     setHistory(prev => [...prev, { role: 'user', text: userMsg }]);
     setIsThinking(true);
@@ -94,7 +135,7 @@ export default function RecruitmentAssistant() {
 
   const quickActions = [
     { label: 'Summarize Pipeline', icon: Layout },
-    { label: 'Show Screening', icon: Search },
+    { label: 'Download Report', icon: Download },
     { label: 'Go to Calendar', icon: ChevronRight },
     { label: 'New Job for HR', icon: FilePlus }
   ];
@@ -140,11 +181,7 @@ export default function RecruitmentAssistant() {
           <div 
             key={i} 
             className={styles.quickAction} 
-            onClick={() => {
-              setMessage(action.label);
-              // Small delay to allow state to update before handleSend is called by some other trigger if any
-              setTimeout(() => handleSend(), 10);
-            }}
+            onClick={() => handleSend(null, action.label)}
           >
             <action.icon size={12} style={{marginRight: '4px'}} />
             {action.label}
