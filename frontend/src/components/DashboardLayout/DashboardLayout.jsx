@@ -14,6 +14,7 @@ import ActivityView from '../Views/ActivityView';
 import CandidateDrawer from '../CandidateDrawer/CandidateDrawer';
 import Subheader from '../Subheader/Subheader';
 import styles from './DashboardLayout.module.css';
+import RecruitmentAssistant from '../Chat/RecruitmentAssistant';
 
 const TABS = [
   "Candidates", "Job Info", "Calendar", "Score Card", "Activity", "Application Form", "Automation"
@@ -671,6 +672,9 @@ export default function DashboardLayout() {
       {activeTopTab === 'Candidate' && (
         <CandidateDrawer candidate={selectedCandidate} onClose={closeDrawer} />
       )}
+
+      {/* Agentic AI Assistant */}
+      <RecruitmentAssistant />
     </div>
   );
 }

@@ -433,9 +433,92 @@ app.delete('/api/interviews/:id', (req, res) => {
   res.status(204).end();
 });
 
-// Activity Feed Endpoint
-app.get('/api/activities', (req, res) => {
-  res.json(activities);
+// Agentic AI Chat Endpoint
+app.post('/api/chat', (req, res) => {
+  const { message, context } = req.body;
+  const lowerMessage = message.toLowerCase();
+  
+  let responseText = "I'm not sure how to help with that. Try asking me to summarize the pipeline, filter candidates, or go to a specific page.";
+  let action = null;
+
+  // Intent: Submit/Create Job (Higher priority to avoid partial matches like 'research' in 'filter')
+  if (lowerMessage.includes('submit') || lowerMessage.includes('create') || lowerMessage.includes('add')) {
+    const jobTitleMatch = message.match(/(?:for|job)\s+([^.]+)/i);
+    const title = jobTitleMatch ? jobTitleMatch[1].trim() : "New Agent Job";
+    responseText = `I've started creating the job for "${title}". You can see it in the list now.`;
+    action = { type: 'SUBMIT_JOB', payload: { title, department: 'Engineering', location: 'Remote' } };
+  }
+
+  // Intent: Download Report
+  else if (lowerMessage.includes('download') || lowerMessage.includes('report') || lowerMessage.includes('export')) {
+    responseText = "Generating your recruitment report... It will be ready in a moment.";
+    action = { type: 'DOWNLOAD_REPORT', payload: { fileName: `Recruitment_Report_${new Date().toISOString().split('T')[0]}.pdf` } };
+  }
+
+  // Intent: Summarize Pipeline
+  else if (lowerMessage.includes('summary') || lowerMessage.includes('summarize') || lowerMessage.includes('pipeline')) {
+    const stageCounts = candidates.reduce((acc, c) => {
+      acc[c.stage] = (acc[c.stage] || 0) + 1;
+      return acc;
+    }, {});
+    
+    const summary = Object.entries(stageCounts).map(([stage, count]) => `${stage}: ${count}`).join(', ');
+    responseText = `Here is your current pipeline summary: ${summary}. You have ${candidates.length} total candidates across ${Object.keys(stageCounts).length} stages.`;
+    action = { type: 'SUMMARIZE', payload: stageCounts };
+  }
+  
+  // Intent: Filter Candidates (Using word boundaries to avoid matching 'research' in 'search')
+  else if (/\b(show|filter|search)\b/i.test(lowerMessage) || lowerMessage.includes('show me')) {
+    const stages = ["Applying Period", "Screening", "Interview", "Test"];
+    const foundStage = stages.find(s => lowerMessage.includes(s.toLowerCase()));
+    
+    if (foundStage) {
+      responseText = `Sure! I've filtered the candidates in the ${foundStage} stage for you.`;
+      action = { type: 'FILTER', payload: foundStage };
+    } else {
+      // General search
+      const searchTerm = message.replace(/\b(show me|show|filter|search)\b/gi, '').trim();
+      responseText = `I've updated the search to: "${searchTerm}".`;
+      action = { type: 'FILTER', payload: searchTerm };
+    }
+  }
+
+  // Intent: Navigate
+  else if (lowerMessage.includes('go to') || lowerMessage.includes('navigate') || lowerMessage.includes('page') || lowerMessage.includes('tab')) {
+    const tabs = ["Candidates", "Job Info", "Calendar", "Score Card", "Activity", "Application Form", "Automation"];
+    const foundTab = tabs.find(t => lowerMessage.includes(t.toLowerCase()));
+    
+    if (foundTab) {
+      responseText = `Navigating to the ${foundTab} page.`;
+      action = { type: 'NAVIGATE', payload: foundTab };
+    }
+  }
+
+  // Intent: Download Report
+  else if (lowerMessage.includes('download') || lowerMessage.includes('report') || lowerMessage.includes('export')) {
+    responseText = "Generating your recruitment report... It will be ready in a moment.";
+    action = { type: 'DOWNLOAD_REPORT', payload: { fileName: `Recruitment_Report_${new Date().toISOString().split('T')[0]}.pdf` } };
+  }
+
+  // Intent: Submit/Create Job
+  else if (lowerMessage.includes('submit a job') || lowerMessage.includes('create a job') || lowerMessage.includes('add a job')) {
+    const jobTitleMatch = message.match(/(?:for|job)\s+([^.]+)/i);
+    const title = jobTitleMatch ? jobTitleMatch[1].trim() : "New Agent Job";
+    responseText = `I've started creating the job for "${title}". You can see it in the list now.`;
+    action = { type: 'SUBMIT_JOB', payload: { title, department: 'Engineering', location: 'Remote' } };
+  }
+
+  // Intent: Contextual questions
+  else if (lowerMessage.includes('referred')) {
+    const referredCount = candidates.filter(c => c.isReferred).length;
+    responseText = `There are currently ${referredCount} candidates who were referred.`;
+  }
+  
+  else if (lowerMessage.includes('candidates') && lowerMessage.includes('total')) {
+    responseText = `You have a total of ${candidates.length} candidates in your pool.`;
+  }
+
+  res.json({ text: responseText, action });
 });
 
 const PORT = process.env.PORT || 5005;
