@@ -47,6 +47,11 @@ export default function DashboardLayout() {
   const [selectedStageForSettings, setSelectedStageForSettings] = useState(null);
   const [isStageCreateRuleOpen, setIsStageCreateRuleOpen] = useState(false);
   const [ruleDefaultStage, setRuleDefaultStage] = useState('');
+  const [isAdvancedFilterOpen, setIsAdvancedFilterOpen] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState({
+    referred: 'all', // 'all', 'referred', 'not-referred'
+    assessment: 'all', // 'all', 'done', 'pending'
+  });
 
 
 
@@ -78,6 +83,7 @@ export default function DashboardLayout() {
   const scoreRef = useRef(null);
   const viewRef = useRef(null);
   const settingsRef = useRef(null);
+  const advancedRef = useRef(null);
 
 
   useEffect(() => {
@@ -96,6 +102,9 @@ export default function DashboardLayout() {
       }
       if (settingsRef.current && !settingsRef.current.contains(event.target)) {
         setIsSettingsOpen(false);
+      }
+      if (advancedRef.current && !advancedRef.current.contains(event.target)) {
+        setIsAdvancedFilterOpen(false);
       }
     }
 
@@ -187,6 +196,15 @@ export default function DashboardLayout() {
     const matchesSearch = c.name.toLowerCase().includes(globalSearch.toLowerCase());
     const matchesScore = scoreRange === 0 || c.overallScore >= scoreRange;
     
+    // Advanced Filters
+    const matchesReferred = advancedFilters.referred === 'all' || 
+      (advancedFilters.referred === 'referred' && c.isReferred) ||
+      (advancedFilters.referred === 'not-referred' && !c.isReferred);
+    
+    const matchesAssessment = advancedFilters.assessment === 'all' ||
+      (advancedFilters.assessment === 'done' && c.assessmentAdded) ||
+      (advancedFilters.assessment === 'pending' && !c.assessmentAdded);
+
     let matchesDate = true;
     if (dateRange.start || dateRange.end) {
       const parseDate = (dateStr) => {
@@ -196,7 +214,7 @@ export default function DashboardLayout() {
           const [d, m, y] = dateStr.split('/');
           return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
         }
-        // Handle DD MMM, YYYY (e.g. 03 Sep, 2023)
+        // Handle DD MMM, YYYY (e.g. 03 Sep, 2026)
         return new Date(dateStr);
       };
 
@@ -212,8 +230,8 @@ export default function DashboardLayout() {
         }
       }
     }
-
-    return matchesSearch && matchesScore && matchesDate;
+    
+    return matchesSearch && matchesScore && matchesDate && matchesReferred && matchesAssessment;
 
 
   });
@@ -298,7 +316,44 @@ export default function DashboardLayout() {
                   )}
                 </div>
 
-                <button className={styles.dropdownBtn}>Advance Filter <ChevronDown size={14} /></button>
+                <div className={styles.dropdownContainer} ref={advancedRef}>
+                  <button className={styles.dropdownBtn} onClick={() => setIsAdvancedFilterOpen(!isAdvancedFilterOpen)}>
+                    Advanced Filter <ChevronDown size={14} />
+                  </button>
+                  {isAdvancedFilterOpen && (
+                    <div className={styles.filterMenu} style={{width: '240px'}}>
+                      <div className={styles.menuHeader}>Referral Status</div>
+                      <div className={styles.filterOptions}>
+                        {['all', 'referred', 'not-referred'].map(opt => (
+                          <div 
+                            key={opt}
+                            className={`${styles.menuItem} ${advancedFilters.referred === opt ? styles.menuItemActive : ''}`}
+                            onClick={() => setAdvancedFilters({...advancedFilters, referred: opt})}
+                          >
+                            {opt === 'all' ? 'Show All' : opt === 'referred' ? 'Referred Only' : 'Not Referred'}
+                          </div>
+                        ))}
+                      </div>
+                      <div className={styles.menuDivider}></div>
+                      <div className={styles.menuHeader}>Assessment Status</div>
+                      <div className={styles.filterOptions}>
+                        {['all', 'done', 'pending'].map(opt => (
+                          <div 
+                            key={opt}
+                            className={`${styles.menuItem} ${advancedFilters.assessment === opt ? styles.menuItemActive : ''}`}
+                            onClick={() => setAdvancedFilters({...advancedFilters, assessment: opt})}
+                          >
+                            {opt === 'all' ? 'Show All' : opt === 'done' ? 'Assessment Done' : 'Pending Assessment'}
+                          </div>
+                        ))}
+                      </div>
+                      <div className={styles.menuDivider}></div>
+                      <div className={styles.menuItem} style={{color: '#3b82f6', textAlign: 'center'}} onClick={() => setAdvancedFilters({referred: 'all', assessment: 'all'})}>
+                        Reset Advanced Filters
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
               <div className={styles.toolbarRight}>
                 <button className={styles.referBtn} onClick={() => setIsReferModalOpen(true)}><UserPlus size={16} /> Refer People</button>

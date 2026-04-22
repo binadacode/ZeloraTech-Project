@@ -32,7 +32,7 @@ let candidates = [
     id: "1",
     name: "Marlon Reynolds",
     stage: "Applying Period",
-    applicationDate: "29 Oct, 2023",
+    applicationDate: "29 Oct, 2026",
     overallScore: 3.5,
     isReferred: true,
     assessmentAdded: false,
@@ -41,7 +41,7 @@ let candidates = [
     experience: "5 years",
     education: "B.S. Computer Science",
     timeline: [
-      { date: "29 Oct, 2023", event: "Applied" }
+      { date: "29 Oct, 2026", event: "Applied" }
     ],
     scoreDetails: { "Technical Skills": 4, "Communication": 3, "Culture Fit": 3.5 }
   },
@@ -49,7 +49,7 @@ let candidates = [
     id: "2",
     name: "Regina Hane",
     stage: "Applying Period",
-    applicationDate: "29 Oct, 2023",
+    applicationDate: "29 Oct, 2026",
     overallScore: 2,
     isReferred: false,
     assessmentAdded: false,
@@ -58,7 +58,7 @@ let candidates = [
     experience: "2 years",
     education: "B.A. Design",
     timeline: [
-      { date: "29 Oct, 2023", event: "Applied" }
+      { date: "29 Oct, 2026", event: "Applied" }
     ],
     scoreDetails: { "Technical Skills": 2, "Communication": 2, "Culture Fit": 2 }
   },
@@ -66,7 +66,7 @@ let candidates = [
     id: "3",
     name: "Curtis Baumbach",
     stage: "Applying Period",
-    applicationDate: "29 Oct, 2023",
+    applicationDate: "29 Oct, 2026",
     overallScore: 3,
     isReferred: true,
     assessmentAdded: false,
@@ -75,7 +75,7 @@ let candidates = [
     experience: "4 years",
     education: "M.S. Software Engineering",
     timeline: [
-      { date: "29 Oct, 2023", event: "Applied" }
+      { date: "29 Oct, 2026", event: "Applied" }
     ],
     scoreDetails: { "Technical Skills": 3, "Communication": 3, "Culture Fit": 3 }
   },
@@ -83,7 +83,7 @@ let candidates = [
     id: "4",
     name: "Jaime Anderson",
     stage: "Applying Period",
-    applicationDate: "29 Oct, 2023",
+    applicationDate: "29 Oct, 2026",
     overallScore: 0,
     isReferred: false,
     assessmentAdded: true,
@@ -92,8 +92,8 @@ let candidates = [
     experience: "1 year",
     education: "Bootcamp Graduate",
     timeline: [
-      { date: "29 Oct, 2023", event: "Applied" },
-      { date: "30 Oct, 2023", event: "Assessment Sent" }
+      { date: "29 Oct, 2026", event: "Applied" },
+      { date: "30 Oct, 2026", event: "Assessment Sent" }
     ],
     scoreDetails: { "Technical Skills": 0, "Communication": 0, "Culture Fit": 0 }
   },
@@ -101,7 +101,7 @@ let candidates = [
     id: "5",
     name: "Kristi Sipes",
     stage: "Screening",
-    applicationDate: "20 Oct, 2023",
+    applicationDate: "20 Oct, 2026",
     overallScore: 3.5,
     isReferred: false,
     assessmentAdded: false,
@@ -110,8 +110,8 @@ let candidates = [
     experience: "6 years",
     education: "B.S. Information Technology",
     timeline: [
-      { date: "20 Oct, 2023", event: "Applied" },
-      { date: "22 Oct, 2023", event: "Moved to Screening" }
+      { date: "20 Oct, 2026", event: "Applied" },
+      { date: "22 Oct, 2026", event: "Moved to Screening" }
     ],
     scoreDetails: { "Technical Skills": 4, "Communication": 3, "Culture Fit": 3.5 }
   },
@@ -119,7 +119,7 @@ let candidates = [
     id: "6",
     name: "Randy Dibbert",
     stage: "Screening",
-    applicationDate: "18 Oct, 2023",
+    applicationDate: "18 Oct, 2026",
     overallScore: 3.5,
     isReferred: false,
     assessmentAdded: false,
@@ -128,8 +128,8 @@ let candidates = [
     experience: "3 years",
     education: "B.A. Business Administration",
     timeline: [
-      { date: "18 Oct, 2023", event: "Applied" },
-      { date: "20 Oct, 2023", event: "Moved to Screening" }
+      { date: "18 Oct, 2026", event: "Applied" },
+      { date: "20 Oct, 2026", event: "Moved to Screening" }
     ],
     scoreDetails: { "Technical Skills": 3, "Communication": 4, "Culture Fit": 3.5 }
   },
@@ -137,7 +137,7 @@ let candidates = [
     id: "7",
     name: "Jane Anderson",
     stage: "Screening",
-    applicationDate: "18 Oct, 2023",
+    applicationDate: "18 Oct, 2026",
     overallScore: 0,
     isReferred: false,
     assessmentAdded: true,
@@ -146,9 +146,9 @@ let candidates = [
     experience: "2 years",
     education: "B.S. Computer Science",
     timeline: [
-      { date: "18 Oct, 2023", event: "Applied" },
-      { date: "19 Oct, 2023", event: "Moved to Screening" },
-      { date: "21 Oct, 2023", event: "Assessment Sent" }
+      { date: "18 Oct, 2026", event: "Applied" },
+      { date: "19 Oct, 2026", event: "Moved to Screening" },
+      { date: "21 Oct, 2026", event: "Assessment Sent" }
     ],
     scoreDetails: { "Technical Skills": 0, "Communication": 0, "Culture Fit": 0 }
   },
@@ -156,7 +156,7 @@ let candidates = [
     id: "8",
     name: "Shelia Doyle",
     stage: "Screening",
-    applicationDate: "13 Oct, 2023",
+    applicationDate: "13 Oct, 2026",
     overallScore: 4.5,
     isReferred: true,
     assessmentAdded: false,
@@ -165,8 +165,8 @@ let candidates = [
     experience: "8 years",
     education: "M.S. Computer Science",
     timeline: [
-      { date: "13 Oct, 2023", event: "Applied" },
-      { date: "15 Oct, 2023", event: "Moved to Screening" }
+      { date: "13 Oct, 2026", event: "Applied" },
+      { date: "15 Oct, 2026", event: "Moved to Screening" }
     ],
     scoreDetails: { "Technical Skills": 5, "Communication": 4, "Culture Fit": 4.5 }
   },
@@ -174,7 +174,7 @@ let candidates = [
     id: "9",
     name: "Cameron Dickens",
     stage: "Interview",
-    applicationDate: "03 Sep, 2023",
+    applicationDate: "03 Sep, 2026",
     overallScore: 4,
     isReferred: false,
     assessmentAdded: false,
@@ -183,9 +183,9 @@ let candidates = [
     experience: "5 years",
     education: "B.S. Software Engineering",
     timeline: [
-      { date: "03 Sep, 2023", event: "Applied" },
-      { date: "05 Sep, 2023", event: "Moved to Screening" },
-      { date: "10 Sep, 2023", event: "Interview Scheduled" }
+      { date: "03 Sep, 2026", event: "Applied" },
+      { date: "05 Sep, 2026", event: "Moved to Screening" },
+      { date: "10 Sep, 2026", event: "Interview Scheduled" }
     ],
     scoreDetails: { "Technical Skills": 4, "Communication": 4, "Culture Fit": 4 }
   },
@@ -193,7 +193,7 @@ let candidates = [
     id: "10",
     name: "Lola Kirlin",
     stage: "Test",
-    applicationDate: "03 Sep, 2023",
+    applicationDate: "03 Sep, 2026",
     overallScore: 4.5,
     isReferred: true,
     assessmentAdded: false,
@@ -202,10 +202,10 @@ let candidates = [
     experience: "7 years",
     education: "M.S. Artificial Intelligence",
     timeline: [
-      { date: "03 Sep, 2023", event: "Applied" },
-      { date: "05 Sep, 2023", event: "Moved to Screening" },
-      { date: "12 Sep, 2023", event: "Interview Completed" },
-      { date: "15 Sep, 2023", event: "Moved to Test" }
+      { date: "03 Sep, 2026", event: "Applied" },
+      { date: "05 Sep, 2026", event: "Moved to Screening" },
+      { date: "12 Sep, 2026", event: "Interview Completed" },
+      { date: "15 Sep, 2026", event: "Moved to Test" }
     ],
     scoreDetails: { "Technical Skills": 5, "Communication": 4, "Culture Fit": 4.5 }
   }

@@ -781,6 +781,11 @@
   margin: 4px 0;
 }
 
+.filterOptions {
+  display: flex;
+  flex-direction: column;
+}
+
 
 .datePickerBody {
   padding: 16px;
