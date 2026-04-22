@@ -1,3 +1,4 @@
+/* Main Navbar Container */
 .navbar {
   display: flex;
   align-items: center;
@@ -5,90 +6,232 @@
   padding: 0 24px;
   height: 60px;
   background-color: #1e1e2d;
+  /* [cite: 2] */
   color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
+
+/* Logo & Brand Section */
 .logoGroup {
   display: flex;
   align-items: center;
   gap: 12px;
+  /* [cite: 3] */
 }
+
 .logoDot {
   width: 24px;
   height: 24px;
   background: linear-gradient(135deg, #f97316 0%, #fbbf24 100%);
-  border-radius: 4px;
+  /* [cite: 4] */
+  border-radius: 6px;
 }
+
 .brand {
   font-weight: 700;
   font-size: 16px;
+  letter-spacing: -0.5px;
 }
+
 .title {
   font-weight: 500;
   color: #a1a1aa;
+  /* [cite: 5] */
   margin-left: 12px;
+  padding-left: 12px;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+/* Navigation Links */
 .navLinks {
   display: flex;
-  gap: 24px;
+  gap: 8px;
+  /* [cite: 5] */
 }
+
 .navLink {
   font-size: 14px;
   color: #a1a1aa;
+  /* [cite: 5, 6] */
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: var(--radius-sm);
+  padding: 8px 16px;
+  border-radius: 8px;
   transition: all 0.2s ease;
+  text-decoration: none;
 }
-.navLink:hover, .navLink.active {
+
+.navLink:hover,
+.navLink.active {
   color: #fff;
-  background-color: rgba(255,255,255,0.1);
+  background-color: rgba(255, 255, 255, 0.08);
+  /* [cite: 7] */
 }
-.badge {
-  background-color: #3f3f46;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-}
-.badgeOrange {
-  background-color: #f97316;
-  color: #fff;
-  padding: 2px 6px;
-  border-radius: var(--radius-sm);
-  font-size: 11px;
-}
+
+/* Action Buttons (The Circles) */
 .actions {
   display: flex;
   align-items: center;
   gap: 16px;
+  /* [cite: 8, 9] */
 }
+
 .actionBtn {
-  width: 34px;
-  height: 34px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255,255,255,0.08);
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  background-color: rgba(255, 255, 255, 0.08);
   border-radius: 50%;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border: none;
+  color: #fff;
+  padding: 0;
+  flex-shrink: 0;
 }
+
+
+.actionBtn svg {
+  display: block;
+  margin: 0;
+}
+
+
 .actionBtn:hover {
-  background-color: rgba(255,255,255,0.15);
+  background-color: rgba(255, 255, 255, 0.15);
+  /* [cite: 10] */
   transform: translateY(-1px);
 }
 
-.avatar {
-  width: 32px;
-  height: 32px;
+/* The Container */
+.searchBar {
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.08);
   border-radius: 50%;
-  background-color: #ccc;
+  cursor: pointer;
+  position: relative;
+  /* This is the anchor */
+  display: block;
+  /* Remove flexbox to prevent alignment conflicts */
   overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: none;
+  padding: 0;
 }
+
+/* Force the Icon to the Dead Center */
+.searchBar svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin: 0 !important;
+  /* Kills any lingering margins from icon libraries */
+  padding: 0 !important;
+  pointer-events: none;
+  /* Allows clicks to pass through to the input */
+  transition: all 0.3s ease;
+}
+
+/* Make the Input an Invisible Overlay */
+.searchBar input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  cursor: pointer;
+  padding-left: 36px;
+  /* Keeps text from overlapping the icon when typing */
+  box-sizing: border-box;
+}
+
+/* --- Expansion Logic --- */
+.searchBar.expanded {
+  width: 240px;
+  border-radius: 20px;
+}
+
+.searchBar.expanded svg {
+  left: 18px;
+  /* Moves the icon to the left side when open */
+}
+
+.searchBar.expanded input {
+  opacity: 1;
+  cursor: text;
+}
+
+/* Notification Dot Animation */
+.notificationDot {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  width: 10px;
+  height: 10px;
+  background-color: #f97316;
+  /*  */
+  border-radius: 50%;
+  border: 2px solid #1e1e2d;
+}
+
+.notificationDot::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f97316;
+  border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* Avatar Section */
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #3f3f46;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease;
+  cursor: pointer;
+  /* [cite: 11] */
+}
+
+.avatar:hover {
+  border-color: #f97316;
+}
+
 .avatar img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  /* [cite: 12] */
 }

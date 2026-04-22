@@ -120,44 +120,50 @@
 }
 
 .searchBar {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: rgba(255,255,255,0.1);
   border-radius: 20px;
   width: 36px;
   height: 36px;
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
   overflow: hidden;
   cursor: pointer;
   padding: 0;
   border: none;
+  flex-shrink: 0;
+  position: relative; /* Added to anchor absolute input */
 }
+
+
 .searchBar.expanded {
   width: 250px;
-  display: flex;
-  align-items: center;
   justify-content: flex-start;
   padding: 0 12px;
   background-color: rgba(255,255,255,0.15);
 }
 
 
+
 .searchBar input {
+  position: absolute;
+  left: 36px;
   background: transparent;
   border: none;
   color: #fff;
   outline: none;
-  width: 100%;
-  margin-left: 8px;
+  width: calc(100% - 48px);
   opacity: 0;
   transition: opacity 0.2s ease;
+  pointer-events: none;
 }
+
 .searchBar.expanded input {
   opacity: 1;
+  pointer-events: auto;
 }
-.searchBar input::placeholder {
-  color: #a1a1aa;
-}
+
 
 @keyframes pulse {
   0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
