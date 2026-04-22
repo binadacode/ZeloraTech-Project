@@ -19,7 +19,8 @@ export function AppProvider({ children }) {
   const [viewMode, setViewMode] = useState("Kanban"); // Kanban or List
   const [selectedCandidate, setSelectedCandidate] = useState(null); // Right drawer
 
-  const [stages, setStages] = useState(["Applying Period", "Screening", "Interview", "Test"]);
+  const [stages, setStages] = useState([]);
+  const [stagesLoading, setStagesLoading] = useState(true);
   const [automationRules, setAutomationRules] = useState([
     { id: 1, triggerStage: 'Interview', action: 'email', description: 'Send email on Interview stage', active: true }
   ]);
@@ -235,6 +236,79 @@ export function AppProvider({ children }) {
     addNotification("Automation rule deleted", "info");
   };
 
+  const fetchStages = async () => {
+    setStagesLoading(true);
+    try {
+      const res = await axios.get('http://localhost:5005/api/stages');
+      setStages(res.data);
+    } catch (error) {
+      console.error('Error fetching stages:', error);
+    } finally {
+      setStagesLoading(false);
+    }
+  };
+
+  const renameStage = async (oldName, newName) => {
+    try {
+      const res = await axios.put('http://localhost:5005/api/stages/rename', { oldName, newName });
+      setStages(res.data.stages);
+      
+      // Update local candidates and rules
+      setCandidates(prev => prev.map(c => c.stage === oldName ? { ...c, stage: newName } : c));
+      setAutomationRules(prev => prev.map(r => r.triggerStage === oldName ? { ...r, triggerStage: newName } : r));
+      
+      addNotification(`Stage renamed to "${newName}"`, 'success');
+      return true;
+    } catch (error) {
+      console.error('Error renaming stage:', error);
+      addNotification('Failed to rename stage', 'error');
+      return false;
+    }
+  };
+
+  const deleteStage = async (name) => {
+    try {
+      const res = await axios.delete(`http://localhost:5005/api/stages/${name}`);
+      setStages(res.data.stages);
+      
+      // Update local candidates
+      setCandidates(prev => prev.map(c => c.stage === name ? { ...c, stage: res.data.fallbackStage } : c));
+      
+      addNotification(`Stage "${name}" deleted. Candidates moved to "${res.data.fallbackStage}".`, 'info');
+      return true;
+    } catch (error) {
+      console.error('Error deleting stage:', error);
+      addNotification('Failed to delete stage', 'error');
+      return false;
+    }
+  };
+
+  const moveStage = async (name, direction) => {
+    const currentIndex = stages.indexOf(name);
+    if (currentIndex === -1) return;
+    
+    const newIndex = direction === 'left' ? currentIndex - 1 : currentIndex + 1;
+    if (newIndex < 0 || newIndex >= stages.length) return;
+    
+    const newStages = [...stages];
+    [newStages[currentIndex], newStages[newIndex]] = [newStages[newIndex], newStages[currentIndex]];
+    
+    return bulkUpdateStages(newStages);
+  };
+
+  const bulkUpdateStages = async (newStages) => {
+    try {
+      const res = await axios.put('http://localhost:5005/api/stages', newStages);
+      setStages(res.data);
+      addNotification("Board columns updated successfully", "success");
+      return true;
+    } catch (error) {
+      console.error('Error updating stages:', error);
+      addNotification('Failed to update board columns', 'error');
+      return false;
+    }
+  };
+
   const fetchSettings = async () => {
     setSettingsLoading(true);
     try {
@@ -320,6 +394,7 @@ export function AppProvider({ children }) {
   useEffect(() => {
     // Initial data fetch
     fetchContextData();
+    fetchStages();
     fetchCandidates();
     fetchJobs();
     fetchInterviews();
@@ -409,6 +484,7 @@ export function AppProvider({ children }) {
       scoreCard, scoreCardLoading, updateScoreCard,
       formConfig, formConfigLoading, updateFormConfig,
       addAutomationRule, toggleAutomationRule, deleteAutomationRule,
+      renameStage, deleteStage, moveStage, bulkUpdateStages, stagesLoading,
       activities, activitiesLoading, fetchActivities
     }}>
 

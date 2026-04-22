@@ -25,6 +25,8 @@ const logActivity = (type, user, action, target, detail = "") => {
   });
 };
 
+let stages = ["Applying Period", "Screening", "Interview", "Test"];
+
 let candidates = [
   {
     id: "1",
@@ -356,6 +358,54 @@ app.put('/api/jobs/:id/publish', (req, res) => {
   } else {
     res.status(404).json({ error: "Job not found" });
   }
+});
+
+// STAGE MANAGEMENT ENDPOINTS
+
+// GET /api/stages
+app.get('/api/stages', (req, res) => {
+  res.json(stages);
+});
+
+// PUT /api/stages (Full update / Reorder)
+app.put('/api/stages', (req, res) => {
+  stages = req.body;
+  res.json(stages);
+});
+
+// PUT /api/stages/rename
+app.put('/api/stages/rename', (req, res) => {
+  const { oldName, newName } = req.body;
+  if (!oldName || !newName) return res.status(400).json({ error: "Missing names" });
+
+  // Update stages array
+  stages = stages.map(s => s === oldName ? newName : s);
+
+  // Update all candidates in this stage
+  candidates = candidates.map(c => 
+    c.stage === oldName ? { ...c, stage: newName } : c
+  );
+
+  logActivity("job", "System", "renamed stage", oldName, `to ${newName}`);
+  res.json({ stages, candidatesCount: candidates.filter(c => c.stage === newName).length });
+});
+
+// DELETE /api/stages/:name
+app.delete('/api/stages/:name', (req, res) => {
+  const name = req.params.name;
+  if (stages.length <= 1) return res.status(400).json({ error: "Cannot delete the last stage" });
+
+  stages = stages.filter(s => s !== name);
+  const fallbackStage = stages[0];
+
+  // Move candidates to fallback
+  const affectedCount = candidates.filter(c => c.stage === name).length;
+  candidates = candidates.map(c => 
+    c.stage === name ? { ...c, stage: fallbackStage } : c
+  );
+
+  logActivity("job", "System", "deleted stage", name, `Moved ${affectedCount} candidates to ${fallbackStage}`);
+  res.json({ stages, fallbackStage, movedCount: affectedCount });
 });
 
 // GET /api/candidates

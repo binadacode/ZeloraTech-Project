@@ -4,7 +4,7 @@ import { useAppContext } from '../../context/AppContext';
 import CandidateColumn from './CandidateColumn';
 import styles from './KanbanBoard.module.css';
 
-export default function KanbanBoard({ candidates, setCandidates, onStageChange, onCandidateClick }) {
+export default function KanbanBoard({ candidates, setCandidates, onStageChange, onCandidateClick, onDetailClick }) {
   const { stages } = useAppContext();
 
 
@@ -50,6 +50,7 @@ export default function KanbanBoard({ candidates, setCandidates, onStageChange, 
               stage={stage}
               candidates={columnCandidates}
               onCandidateClick={onCandidateClick}
+              onDetailClick={onDetailClick}
             />
           );
         })}

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { X, Mail, Bell, MessageSquare } from 'lucide-react';
-import styles from './ScheduleInterviewModal.module.css'; 
+import styles from './CreateRuleModal.module.css'; 
 import { useAppContext } from '../../context/AppContext';
 
-export default function CreateRuleModal({ isOpen, onClose }) {
+export default function CreateRuleModal({ isOpen, onClose, defaultStage }) {
   const { addAutomationRule, stages } = useAppContext();
   const [ruleData, setRuleData] = useState({
     description: '',
-    triggerStage: stages[0] || 'Applying Period',
+    triggerStage: defaultStage || stages[0] || 'Applying Period',
     action: 'email'
   });
 
@@ -25,7 +25,7 @@ export default function CreateRuleModal({ isOpen, onClose }) {
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
         <div className={styles.header}>
           <h2>Create Automation Rule</h2>
-          <button className={styles.closeBtn} onClick={onClose}><X size={20} /></button>
+          <button className={styles.closeBtn} onClick={onClose}><X size={18} /></button>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -54,34 +54,18 @@ export default function CreateRuleModal({ isOpen, onClose }) {
 
             <div className={styles.formGroup}>
               <label>Perform Action:</label>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+              <div className={styles.actionGrid}>
                 <button 
                   type="button"
                   onClick={() => setRuleData({...ruleData, action: 'email'})}
-                  style={{ 
-                    padding: '12px', 
-                    borderRadius: '8px', 
-                    border: '1px solid',
-                    borderColor: ruleData.action === 'email' ? 'var(--color-primary)' : 'var(--border-color)',
-                    background: ruleData.action === 'email' ? 'var(--color-primary-light)' : 'var(--bg-main)',
-                    color: ruleData.action === 'email' ? 'var(--color-primary)' : 'var(--text-secondary)',
-                    display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer'
-                  }}
+                  className={`${styles.actionBtn} ${ruleData.action === 'email' ? styles.actionBtnActive : ''}`}
                 >
                   <Mail size={16} /> Email
                 </button>
                 <button 
                   type="button"
                   onClick={() => setRuleData({...ruleData, action: 'notify'})}
-                  style={{ 
-                    padding: '12px', 
-                    borderRadius: '8px', 
-                    border: '1px solid',
-                    borderColor: ruleData.action === 'notify' ? 'var(--color-primary)' : 'var(--border-color)',
-                    background: ruleData.action === 'notify' ? 'var(--color-primary-light)' : 'var(--bg-main)',
-                    color: ruleData.action === 'notify' ? 'var(--color-primary)' : 'var(--text-secondary)',
-                    display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer'
-                  }}
+                  className={`${styles.actionBtn} ${ruleData.action === 'notify' ? styles.actionBtnActive : ''}`}
                 >
                   <Bell size={16} /> Notify
                 </button>

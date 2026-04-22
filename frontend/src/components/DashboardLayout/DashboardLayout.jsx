@@ -15,6 +15,9 @@ import CandidateDrawer from '../CandidateDrawer/CandidateDrawer';
 import Subheader from '../Subheader/Subheader';
 import styles from './DashboardLayout.module.css';
 import RecruitmentAssistant from '../Chat/RecruitmentAssistant';
+import StageDetailModal from '../Modals/StageDetailModal';
+import StageSettingsModal from '../Modals/StageSettingsModal';
+import CreateRuleModal from '../Modals/CreateRuleModal';
 
 const TABS = [
   "Candidates", "Job Info", "Calendar", "Score Card", "Activity", "Application Form", "Automation"
@@ -40,6 +43,10 @@ export default function DashboardLayout() {
   const [isViewDropdownOpen, setIsViewDropdownOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [activeSettingsModal, setActiveSettingsModal] = useState(null); // 'columns', 'rules', 'permissions', 'archive'
+  const [selectedStageDetail, setSelectedStageDetail] = useState(null);
+  const [selectedStageForSettings, setSelectedStageForSettings] = useState(null);
+  const [isStageCreateRuleOpen, setIsStageCreateRuleOpen] = useState(false);
+  const [ruleDefaultStage, setRuleDefaultStage] = useState('');
 
 
 
@@ -343,6 +350,7 @@ export default function DashboardLayout() {
                 setCandidates={setCandidates}
                 onStageChange={updateCandidateStage}
                 onCandidateClick={setSelectedCandidate}
+                onDetailClick={setSelectedStageDetail}
               />
             ) : (
               renderListView()
@@ -671,6 +679,41 @@ export default function DashboardLayout() {
       {/* Right Drawer Overlay */}
       {activeTopTab === 'Candidate' && (
         <CandidateDrawer candidate={selectedCandidate} onClose={closeDrawer} />
+      )}
+
+      {/* Stage Detail Modal */}
+      {selectedStageDetail && (
+        <StageDetailModal 
+          stage={selectedStageDetail} 
+          candidates={candidates.filter(c => c.stage === selectedStageDetail)}
+          onClose={() => setSelectedStageDetail(null)}
+          onCandidateClick={setSelectedCandidate}
+          onSettingsClick={(stage) => {
+            setSelectedStageDetail(null);
+            setSelectedStageForSettings(stage);
+          }}
+        />
+      )}
+
+      {/* Stage Settings Modal */}
+      {selectedStageForSettings && (
+        <StageSettingsModal 
+          stageName={selectedStageForSettings}
+          onClose={() => setSelectedStageForSettings(null)}
+          onOpenCreateRule={(stage) => {
+            setRuleDefaultStage(stage);
+            setIsStageCreateRuleOpen(true);
+          }}
+        />
+      )}
+
+      {/* Quick Create Rule from Stage Settings */}
+      {isStageCreateRuleOpen && (
+        <CreateRuleModal 
+          isOpen={isStageCreateRuleOpen}
+          onClose={() => setIsStageCreateRuleOpen(false)}
+          defaultStage={ruleDefaultStage}
+        />
       )}
 
       {/* Agentic AI Assistant */}

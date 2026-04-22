@@ -5,7 +5,7 @@ import CreateRuleModal from '../Modals/CreateRuleModal';
 import styles from './SettingsModals.module.css';
 
 export function ColumnConfigModal({ onClose }) {
-  const { stages, setStages, addNotification } = useAppContext();
+  const { stages, bulkUpdateStages } = useAppContext();
   const [localStages, setLocalStages] = useState([...stages]);
 
   const handleAdd = () => setLocalStages([...localStages, "New Column"]);
@@ -16,9 +16,8 @@ export function ColumnConfigModal({ onClose }) {
     setLocalStages(next);
   };
 
-  const handleSave = () => {
-    setStages(localStages);
-    addNotification("Board columns updated successfully", "success");
+  const handleSave = async () => {
+    await bulkUpdateStages(localStages);
     onClose();
   };
 

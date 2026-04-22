@@ -3,7 +3,7 @@ import { Droppable } from '@hello-pangea/dnd';
 import CandidateCard from '../CandidateCard/CandidateCard';
 import styles from './CandidateColumn.module.css';
 
-export default function CandidateColumn({ stage, candidates, onCandidateClick }) {
+export default function CandidateColumn({ stage, candidates, onCandidateClick, onDetailClick }) {
   const getStageClass = (st) => {
     switch (st) {
       case "Applying Period": return styles.applying;
@@ -20,7 +20,12 @@ export default function CandidateColumn({ stage, candidates, onCandidateClick })
         <div className={styles.stageBadge}>
           {stage} <span className={styles.count}>{candidates.length}</span>
         </div>
-        <div className={styles.detail}>Detail &gt;</div>
+        <div 
+          className={styles.detail} 
+          onClick={() => onDetailClick && onDetailClick(stage)}
+        >
+          Detail &gt;
+        </div>
       </div>
       
       <Droppable droppableId={stage}>
