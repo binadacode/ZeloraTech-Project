@@ -483,6 +483,11 @@ app.delete('/api/interviews/:id', (req, res) => {
   res.status(204).end();
 });
 
+// GET /api/activities
+app.get('/api/activities', (req, res) => {
+  res.json(activities);
+});
+
 // Agentic AI Chat Endpoint
 app.post('/api/chat', (req, res) => {
   const { message, context } = req.body;

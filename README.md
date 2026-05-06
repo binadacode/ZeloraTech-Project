@@ -60,7 +60,7 @@ To start both the frontend and backend development servers simultaneously, use t
 npm run dev
 ```
 * The **Frontend** will be available at: `http://localhost:5173`
-* The **Backend** will be available at: `http://localhost:5000`
+* The **Backend** will be available at: `http://localhost:5005`
 
 #### Individual Services (Optional)
 If you need to run the services separately for debugging or specific testing:
